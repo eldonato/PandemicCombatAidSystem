@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class PandemicApplication {
+public class PandemicApplicationAPI {
 
 	@Bean
 	public ModelMapper modelMapper(){
@@ -16,7 +16,7 @@ public class PandemicApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(PandemicApplication.class, args);
+		SpringApplication.run(PandemicApplicationAPI.class, args);
 	}
 
 }

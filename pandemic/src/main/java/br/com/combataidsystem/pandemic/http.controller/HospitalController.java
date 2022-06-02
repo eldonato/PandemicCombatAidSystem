@@ -1,6 +1,7 @@
 package br.com.combataidsystem.pandemic.http.controller;
 
 import br.com.combataidsystem.pandemic.model.DTO.HospitalDTO;
+import br.com.combataidsystem.pandemic.model.DTO.RelatorioDTO;
 import br.com.combataidsystem.pandemic.model.entity.Hospital;
 import br.com.combataidsystem.pandemic.service.HospitalService;
 import org.modelmapper.ModelMapper;
@@ -55,19 +56,6 @@ public class HospitalController {
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Hospital não encontrado"));
     }
 
-//    @PutMapping("/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Hospital update(@PathVariable("id") Long id, @RequestBody Hospital hospital){
-//        return service.getById(id)
-//                .map(hospitalRepo -> {
-//                    mapper.map(hospital, hospitalRepo);
-//                    service.salvar(hospitalRepo);
-//                    return hospitalRepo;
-//                })
-//                .orElseThrow(() ->
-//                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Hospital não encontrado"));
-//    }
-
     @PutMapping("/{id}/atualizarOcupacao")
     @ResponseStatus(HttpStatus.OK)
     public void atualizarOcupacao(@RequestParam float percentualOcupacao, @PathVariable Long id){
@@ -75,6 +63,12 @@ public class HospitalController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hospital não encontrado"));
 
         service.atualizarOcupacao(hospitalBase, percentualOcupacao);
+    }
+
+    @GetMapping("/relatorio")
+    @ResponseStatus(HttpStatus.OK)
+    public RelatorioDTO GerarRelatorio(){
+        return service.gerarRelatorio();
     }
 
 

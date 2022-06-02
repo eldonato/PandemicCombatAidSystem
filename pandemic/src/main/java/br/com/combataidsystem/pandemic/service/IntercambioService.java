@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class IntercambioService {
@@ -41,11 +40,6 @@ public class IntercambioService {
         return somaOrigem == somaDestino;
     }
 
-    public boolean validarRecursos(IntercambioDTO intercambioDTO){
-        return (intercambioDTO.getHospitalOrigem().getRecursos().containsAll(intercambioDTO.getRecursosOrigem())
-                &&
-                intercambioDTO.getHospitalDestino().getRecursos().containsAll(intercambioDTO.getRecursosDestino()));
-    }
 
     public boolean validarIntercambio(IntercambioDTO intercambioDTO){
 
@@ -69,13 +63,15 @@ public class IntercambioService {
         Hospital hospitalDestino = hospitalRepository.findById(intercambioDTO.getHospitalDestino().getId())
                 .orElseThrow();
 
-        List<Recurso> recursosOrigem = recursoRepository.findAll().stream()
-                .filter(recurso -> Objects.equals(recurso.getHospital().getId(), hospitalOrigem.getId()))
-                .toList();
+        List<Recurso> recursosOrigem = new ArrayList<>();
+        for(Recurso recurso : intercambioDTO.getRecursosOrigem()){
+            recursosOrigem.add(recursoRepository.findById(recurso.getId()).orElseThrow());
+        }
 
-        List<Recurso> recursosDestino = recursoRepository.findAll().stream()
-                .filter(recurso -> Objects.equals(recurso.getHospital().getId(), hospitalDestino.getId()))
-                .toList();
+        List<Recurso> recursosDestino = new ArrayList<>();
+        for(Recurso recurso : intercambioDTO.getRecursosDestino()){
+            recursosDestino.add(recursoRepository.findById(recurso.getId()).orElseThrow());
+        }
 
         Intercambio intercambioOrigem = new Intercambio(hospitalOrigem, hospitalDestino);
         Intercambio intercambioDestino = new Intercambio(hospitalDestino, hospitalOrigem);
@@ -100,11 +96,13 @@ public class IntercambioService {
 
         for(Recurso recurso : recursosOrigem){
             recurso.setHospital(hospitalDestino);
-            System.out.println(recurso.getNome() +" "+recurso.getHospital().getId());
         }
         for(Recurso recurso : recursosDestino){
             recurso.setHospital(hospitalOrigem);
         }
+
+        recursoRepository.saveAll(recursosOrigem);
+        recursoRepository.saveAll(recursosDestino);
 
     }
 }
